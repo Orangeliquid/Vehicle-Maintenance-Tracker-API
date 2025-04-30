@@ -98,7 +98,6 @@ def crud_fetch_all_users(db: Session) -> List[Type[User]]:
     return users
 
 
-# TODO: crud_delete_user
 def crud_update_user(db: Session, user_id: int, user_update: UserUpdate) -> dict:
     db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:
