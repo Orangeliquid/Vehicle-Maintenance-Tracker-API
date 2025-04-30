@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
-from app.routes import users, vehicles, maintenance, reminder
+from app.routes import users, vehicles, maintenance, reminder, statistics
 from app.models import Base
 from app.database import engine
 
@@ -19,6 +19,7 @@ app.include_router(users.router)
 app.include_router(vehicles.router)
 app.include_router(maintenance.router)
 app.include_router(reminder.router)
+app.include_router(statistics.router)
 
 Base.metadata.create_all(bind=engine)
 
