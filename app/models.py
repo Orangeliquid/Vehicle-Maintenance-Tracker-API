@@ -79,6 +79,7 @@ class MaintenanceReminder(Base):
     last_serviced_date = Column(DateTime, nullable=True)  # Date of last service in datetime format
     notify_before_miles = Column(Integer, default=500)  # 300, 500
     notify_before_days = Column(Integer, default=14)  # 15, 30
+    estimated_miles_driven_per_month = Column(Integer, default=500)  # default is less than average
     is_active = Column(Boolean, default=True)  # Bool
     created_at = Column(DateTime(timezone=True), server_default=func.now())  # Date created in datetime
     updated_at = Column(DateTime(timezone=True), onupdate=func.now(), index=True)  # Date updated in datetime
