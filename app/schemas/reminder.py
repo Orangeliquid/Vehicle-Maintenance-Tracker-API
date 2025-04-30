@@ -15,6 +15,7 @@ class MaintenanceReminderBase(BaseModel):
     last_serviced_date: Optional[datetime] = None
     notify_before_miles: Optional[int] = Field(default=500, description="Miles before due to trigger notification")
     notify_before_days: Optional[int] = Field(default=14, description="Days before due to trigger notification")
+    estimated_miles_driven_per_month: Optional[int] = Field(default=500)
     is_active: Optional[bool] = Field(default=True, description="Is the car active or not in use?")
 
     class Config:
@@ -81,7 +82,27 @@ class MaintenanceReminderUpdate(BaseModel):
     last_serviced_date: Optional[datetime] = None
     notify_before_miles: Optional[int] = None
     notify_before_days: Optional[int] = None
+    estimated_miles_driven_per_month: Optional[int] = None
     is_active: Optional[bool] = None
+
+    @model_validator(mode="after")
+    def validate_reminder(self) -> Self:
+        int_fields = [
+                ("interval_miles", self.interval_miles),
+                ("interval_months", self.interval_months),
+                ("last_serviced_mileage", self.last_serviced_mileage),
+                ("notify_before_miles", self.notify_before_miles),
+                ("notify_before_days", self.notify_before_days),
+            ]
+
+        for field_name, value in int_fields:
+            if value is not None and value < 0:
+                raise ValueError(f"{field_name} cannot be negative.")
+
+        return self
+
+    class Config:
+        from_attributes = True
 
 
 class MaintenanceReminderUpdateResponse(BaseModel):
