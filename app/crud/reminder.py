@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import select
 from fastapi import HTTPException, status
-from typing import Type, List, Optional
+from typing import Optional
 from datetime import datetime
 
 from app.models import User, Vehicle, MaintenanceReminder
@@ -50,6 +50,7 @@ def crud_create_maintenance_reminder(
         last_serviced_date=maintenance_reminder.last_serviced_date,
         notify_before_miles=maintenance_reminder.notify_before_miles,
         notify_before_days=maintenance_reminder.notify_before_days,
+        estimated_miles_driven_per_month=maintenance_reminder.estimated_miles_driven_per_month,
         is_active=maintenance_reminder.is_active,
         vehicle_id=maintenance_reminder.vehicle_id
     )
@@ -93,6 +94,7 @@ def crud_fetch_all_maintenance_reminders_filtered(
         last_serviced_date: Optional[datetime],
         notify_before_miles: Optional[int],
         notify_before_days: Optional[int],
+        estimated_miles_driven_per_month: Optional[int],
         is_active: Optional[bool],
         vehicle_make: Optional[str],
         vehicle_model: Optional[str],
@@ -111,6 +113,7 @@ def crud_fetch_all_maintenance_reminders_filtered(
         "last_serviced_date": last_serviced_date,
         "notify_before_miles": notify_before_miles,
         "notify_before_days": notify_before_days,
+        "estimated_miles_driven_per_month": estimated_miles_driven_per_month,
         "is_active": is_active,
         "make": vehicle_make,
         "model": vehicle_model,
@@ -165,11 +168,61 @@ def crud_update_maintenance_reminder(
             detail=f"Reminder: {maintenance_reminder_id} not found"
         )
 
-    if reminder.vehicle_id != current_user.id:
+    # Simulate future state
+    interval_miles = update_data.interval_miles \
+        if "interval_miles" in update_data.model_fields_set else reminder.interval_miles
+
+    last_serviced_mileage = update_data.last_serviced_mileage \
+        if "last_serviced_mileage" in update_data.model_fields_set else reminder.last_serviced_mileage
+
+    interval_months = update_data.interval_months \
+        if "interval_months" in update_data.model_fields_set else reminder.interval_months
+
+    last_serviced_date = update_data.last_serviced_date \
+        if "last_serviced_date" in update_data.model_fields_set else reminder.last_serviced_date
+
+    mileage_valid = interval_miles is not None and last_serviced_mileage is not None
+    time_valid = interval_months is not None and last_serviced_date is not None
+
+    if not mileage_valid and not time_valid:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Reminder must include either a complete mileage-based or time-based configuration."
+        )
+
+    if reminder.vehicle.user_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not authorized to update this record."
         )
+
+    updated_fields = update_data.dict(exclude_unset=True)
+
+    # Pycharm doesn't like the '==' comparator but works just fine at runtime
+    vehicle = db.query(Vehicle).filter(Vehicle.id == reminder.vehicle_id).first()
+
+    if not vehicle:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Vehicle associated with this reminder not found."
+        )
+
+    if "last_serviced_mileage" in updated_fields:
+        if updated_fields["last_serviced_mileage"] > vehicle.mileage:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=(
+                    f"Last serviced mileage ({updated_fields['last_serviced_mileage']}) "
+                    f"cannot be greater than current vehicle mileage ({vehicle.mileage})."
+                )
+            )
+
+    if "last_serviced_date" in updated_fields:
+        if updated_fields["last_serviced_date"] > datetime.utcnow():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Last serviced date cannot be in the future."
+            )
 
     old_data = make_maintenance_reminder_response(maintenance_reminder=reminder)
 
@@ -230,4 +283,3 @@ def crud_delete_maintenance_reminder(db: Session, current_user: User, maintenanc
         "id": maintenance_reminder_id,
         "message": f"Maintenance Record ID: {maintenance_reminder_id} deleted successfully."
     }
-
