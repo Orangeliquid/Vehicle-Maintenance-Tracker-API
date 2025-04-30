@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import select
 from fastapi import HTTPException, status
-from typing import Type, List, Optional
+from typing import Optional
 from datetime import datetime
 
 from app.models import User, Vehicle, MaintenanceRecord
