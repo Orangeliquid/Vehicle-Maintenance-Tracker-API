@@ -9,8 +9,8 @@ class MaintenanceBase(BaseModel):
     maintenance_provider: Optional[str] = Field(None, example="Valvoline")
     maintenance_type: str = Field(None, example="Oil Change")
     description: Optional[str] = Field(None, example="Changed to synthetic oil.")
-    mileage: int = Field(None, example="133150")
-    cost: float = Field(None, example="89.56")
+    mileage: int = Field(None, example=133150)
+    cost: float = Field(None, example=89.56)
     serviced_at: Optional[datetime] = Field(None, example="2024-04-10T10:00:00")
 
     @field_validator('mileage', 'cost', mode='before')
