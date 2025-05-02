@@ -2,9 +2,8 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from fastapi import HTTPException
-from fastapi.security import OAuth2PasswordRequestForm
 
-from app.models import Base, User, Vehicle
+from app.models import Base
 from app.crud import users, vehicles
 from app.schemas.users import UserCreate
 from app.schemas.vehicles import VehicleCreate, VehicleUpdate
