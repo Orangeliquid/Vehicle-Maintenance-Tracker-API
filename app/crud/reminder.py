@@ -27,11 +27,13 @@ def crud_create_maintenance_reminder(
         )
 
     if (maintenance_reminder.last_serviced_mileage is not None and
-            maintenance_reminder.last_serviced_mileage > vehicle.mileage):
+            maintenance_reminder.last_serviced_mileage < vehicle.mileage):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Last serviced mileage({maintenance_reminder.last_serviced_mileage}) "
-                   f"cannot be greater than current vehicle mileage({vehicle.mileage})"
+            detail=(
+                f"Last serviced mileage({maintenance_reminder.last_serviced_mileage}) "
+                f"cannot be greater than current vehicle mileage({vehicle.mileage})"
+            )
         )
 
     if (maintenance_reminder.last_serviced_date is not None and
@@ -136,13 +138,8 @@ def crud_fetch_all_maintenance_reminders_filtered(
 
         if hasattr(MaintenanceReminder, attr):
             column = getattr(MaintenanceReminder, attr)
-        elif hasattr(Vehicle, attr):
-            column = getattr(Vehicle, attr)
         else:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Invalid filter field: '{attr}'"
-            )
+            column = getattr(Vehicle, attr)
 
         if isinstance(value, str):
             query = query.filter(column.ilike(f"%{value}%"))
@@ -201,12 +198,6 @@ def crud_update_maintenance_reminder(
     # Pycharm doesn't like the '==' comparator but works just fine at runtime
     vehicle = db.query(Vehicle).filter(Vehicle.id == reminder.vehicle_id).first()
 
-    if not vehicle:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Vehicle associated with this reminder not found."
-        )
-
     if "last_serviced_mileage" in updated_fields:
         if updated_fields["last_serviced_mileage"] > vehicle.mileage:
             raise HTTPException(
@@ -242,13 +233,13 @@ def crud_update_maintenance_reminder(
             "old_data": old_data,
             "updated_data": old_data,
             "changes": changes,
-            "update_message": f"No updates were made to Maintenance Record ID {maintenance_reminder_id}."
+            "update_message": f"No updates were made to Maintenance Reminder ID {maintenance_reminder_id}."
         }
 
     db.commit()
     db.refresh(reminder)
 
-    updated_data = make_maintenance_reminder_response(reminder)
+    updated_data = make_maintenance_reminder_response(maintenance_reminder=reminder)
 
     update_message = f"Maintenance Record ID {maintenance_reminder_id} updated successfully."
 
