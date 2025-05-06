@@ -14,6 +14,7 @@ def make_maintenance_reminder_response(maintenance_reminder: Type[MaintenanceRem
         last_serviced_date=maintenance_reminder.last_serviced_date,
         notify_before_miles=maintenance_reminder.notify_before_miles,
         notify_before_days=maintenance_reminder.notify_before_days,
+        estimated_miles_driven_per_month=maintenance_reminder.estimated_miles_driven_per_month,
         is_active=maintenance_reminder.is_active,
         id=maintenance_reminder.id,
         created_at=maintenance_reminder.created_at,
