@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from fastapi import HTTPException
 
 from app.models import Base
-from app.crud import users, vehicles, maintenance
+from app.crud import vehicles, maintenance
 from app.schemas.vehicles import VehicleCreate
 from app.schemas.maintenance import MaintenanceCreate, MaintenanceUpdate
 from test_crud_vehicles import get_new_user
@@ -28,22 +28,40 @@ def db():
         db.close()
 
 
-def get_registered_car(db, current_user):
-    vehicle_data = VehicleCreate(
-        vehicle_type="Sedan",
-        make="Toyota",
-        model="Corolla",
-        color="Blue",
-        year=2020,
-        mileage=25000,
-        vin="asdf853dasdf51g",
-        license_plate="XYZ123",
-        registration_state="OH",
-        fuel_type="Gasoline",
-        transmission_type="Automatic",
-        is_active=True,
-        nickname="DailyDriver"
-    )
+def get_registered_car(db, current_user, user_id: int = 1):
+    if user_id == 1:
+        vehicle_data = VehicleCreate(
+            vehicle_type="Sedan",
+            make="Toyota",
+            model="Corolla",
+            color="Blue",
+            year=2020,
+            mileage=25000,
+            vin="asdf853dasdf51g",
+            license_plate="XYZ123",
+            registration_state="OH",
+            fuel_type="Gasoline",
+            transmission_type="Automatic",
+            is_active=True,
+            nickname="DailyDriver"
+        )
+
+    else:
+        vehicle_data = VehicleCreate(
+            vehicle_type="Sedan",
+            make="Toyota",
+            model="Prius",
+            color="Blue",
+            year=2020,
+            mileage=25000,
+            vin="uydfjasdn45sd2215",
+            license_plate="XYZ999",
+            registration_state="OH",
+            fuel_type="Gasoline",
+            transmission_type="Automatic",
+            is_active=True,
+            nickname="Little Betty"
+        )
 
     return vehicles.crud_register_new_vehicle(db=db, current_user=current_user, vehicle_create=vehicle_data)
 
@@ -449,6 +467,7 @@ def test_update_maintenance_record_no_updates_passed(db):
     assert old_data == updated_data
     for key, value in changes.items():
         assert value is False
+    assert update_message == "No updates were made to Maintenance Record ID 1."
 
 
 def test_delete_maintenance_record(db):
@@ -486,7 +505,7 @@ def test_delete_maintenance_record(db):
 
 def test_delete_maintenance_record_no_maintenance_record_found(db):
     created_user = get_new_user(db=db, user_id=1)
-    new_vehicle = get_registered_car(db=db, current_user=created_user)
+    get_registered_car(db=db, current_user=created_user)
 
     with pytest.raises(HTTPException) as exc_info:
         maintenance.crud_delete_maintenance_record(db=db, current_user=created_user, maintenance_record_id=1)
