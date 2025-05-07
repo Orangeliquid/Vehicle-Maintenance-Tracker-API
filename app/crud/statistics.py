@@ -42,12 +42,6 @@ def crud_fetch_user_maintenance_statistics(db: Session, current_user: User) -> d
 
 
 def query_maintenance_records(db: Session, vehicle_ids: list) -> dict:
-    """
-    total_maintenance_records=,
-    total_maintenance_cost=,
-    highest_cost_maintenance_record=,
-    most_maintained_vehicle=
-    """
     maintenance_records = db.query(MaintenanceRecord).filter(MaintenanceRecord.vehicle_id.in_(vehicle_ids)).all()
     for record in maintenance_records:
         print(f"ID: {record.id}, Cost: {record.cost}, Vehicle: {record.vehicle.nickname}")
@@ -55,14 +49,12 @@ def query_maintenance_records(db: Session, vehicle_ids: list) -> dict:
     total_maintenance_records = len(maintenance_records)
     total_maintenance_cost = sum(record.cost for record in maintenance_records if record.cost)
 
-    # Get all non-None cost values to ensure we don't use max() on an empty iterable
     valid_costs = [record.cost for record in maintenance_records if record.cost is not None]
 
-    # Calculate the highest cost maintenance record (ensure default is 0.0)
     highest_cost_maintenance_record = float(max(valid_costs))
 
     vehicle_counts = Counter([record.vehicle_id for record in maintenance_records])
-    print(f"Vehicle Counts: {vehicle_counts}")
+    # if there is a tie, as in equal amounts of maintenance records for a vehicle, index 0 will be set as val
     most_maintained_vehicle_id = vehicle_counts.most_common(1)[0][0] if vehicle_counts else None
 
     most_maintained_vehicle = None
@@ -117,15 +109,18 @@ def query_maintenance_reminders(db: Session, vehicle_ids: list) -> dict:
             else:
                 is_upcoming = True
 
-        # TODO: Figure out how to implement current mileage estimate or have user put mileage in when on app
-        if reminder.last_serviced_mileage and reminder.interval_miles:
+        if (
+                reminder.last_serviced_mileage is not None and
+                reminder.interval_miles and
+                reminder.estimated_miles_driven_per_month
+        ):
             service_mileage_due = reminder.last_serviced_mileage + reminder.interval_miles
-            notify_before_mileage = service_mileage_due - reminder.notify_before_days
+            notify_before_mileage = service_mileage_due - reminder.notify_before_miles
 
             estimated_months_passed = (now - starting_reminder_date).days / 30
             estimated_miles_driven = reminder.estimated_miles_driven_per_month * estimated_months_passed
 
-            if estimated_miles_driven >= notify_before_mileage:
+            if estimated_miles_driven + reminder.last_serviced_mileage >= notify_before_mileage:
                 is_overdue = True
             else:
                 is_upcoming = True
