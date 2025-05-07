@@ -50,7 +50,6 @@ def get_new_user(db, user_id: int):
 
 
 def test_register_new_vehicle(db):
-
     created_user = get_new_user(db=db, user_id=1)
 
     vehicle_data = VehicleCreate(
