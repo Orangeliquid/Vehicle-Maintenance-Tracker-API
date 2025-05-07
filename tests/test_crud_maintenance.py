@@ -28,8 +28,8 @@ def db():
         db.close()
 
 
-def get_registered_car(db, current_user, user_id: int = 1):
-    if user_id == 1:
+def get_registered_car(db, current_user, vehicle_number: int = 1):
+    if vehicle_number == 1:
         vehicle_data = VehicleCreate(
             vehicle_type="Sedan",
             make="Toyota",
