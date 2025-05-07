@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from fastapi import HTTPException
 
 from app.models import Base, MaintenanceReminder
-from app.crud import vehicles, maintenance, reminder
+from app.crud import reminder
 from app.schemas.reminder import MaintenanceReminderCreate, MaintenanceReminderUpdate
 from test_crud_vehicles import get_new_user
 from test_crud_maintenance import get_registered_car
