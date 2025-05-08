@@ -1,8 +1,7 @@
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from fastapi import HTTPException
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from app.models import Base
 from app.crud import reminder, maintenance, statistics
