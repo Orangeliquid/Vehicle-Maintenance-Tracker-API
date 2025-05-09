@@ -28,7 +28,7 @@ def fetch_user_vehicles(db: Session = Depends(get_db), current_user: User = Depe
     return crud_fetch_user_vehicles(db=db, current_user=current_user)
 
 
-@router.get("/vehicles/filter/", response_model=VehicleListResponse)
+@router.get("/vehicles/filtered/", response_model=VehicleListResponse)
 def fetch_user_vehicles_filtered(
     vehicle_type: Optional[str] = Query(None),
     make: Optional[str] = Query(None),
