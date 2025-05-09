@@ -6,13 +6,13 @@ Vehicle Maintenance Tracker API is a RESTful API that offers SQLAlchemy database
 ## Table of Contents
 
 - [Installation](#installation)
-- [Usage](#Usage-API-Overview)
-- [API-Endpoints](#API-Endpoints)
-  - [Users](#Users)
-  - [Vehicles](#Vehicles)
-  - [Maintenance](#Maintenance)
-  - [Reminders](#Reminders)
-  - [Statistics](#Statistics)
+- [Usage](#usage-api-overview)
+- [API-Endpoints](#api-endpoints)
+  - [Users](#users)
+  - [Vehicles](#vehicles)
+  - [Maintenance](#maintenance)
+  - [Reminders](#reminders)
+  - [Statistics](#statistics)
 - [License](#license)
 
 ## Installation
@@ -455,7 +455,7 @@ To run Vehicle Maintenance Tracker API locally, follow these steps:
     "created_at": "2025-05-08T09:22:20.191Z"
   }
   ```
-  - **422 Validation Error**:
+- **422 Validation Error**:
   ```json
   {
     "detail": [
@@ -472,7 +472,7 @@ To run Vehicle Maintenance Tracker API locally, follow these steps:
   ```
 ---
 
-- **DELETE /vehicles/filtered/ - Requires User Authentication**
+- **GET /vehicles/filtered/ - Requires User Authentication**
 - **Description**: Fetch user vehicles with filter parameters.
 - **Parameters**:
   ```json
@@ -516,7 +516,7 @@ To run Vehicle Maintenance Tracker API locally, follow these steps:
     ]
   }
   ```
-  - **422 Validation Error**:
+- **422 Validation Error**:
   ```json
   {
     "detail": [
@@ -533,4 +533,670 @@ To run Vehicle Maintenance Tracker API locally, follow these steps:
   ```
 ---
 
-  
+- **PUT /vehicles/{vehicle_id}/ - Requires User Authentication**
+- **Description**: Update user vehicle in database.
+- **Parameters**:
+  ```json
+  {
+    "vehicle_id": 0,
+  }
+- **Request Body**
+  ```json
+  {
+    "vehicle_type": "string",
+    "make": "string",
+    "model": "string",
+    "color": "string",
+    "year": 0,
+    "mileage": 0,
+    "vin": "string",
+    "license_plate": "string",
+    "registration_state": "string",
+    "fuel_type": "string",
+    "transmission_type": "string",
+    "is_active": true,
+    "nickname": "string"
+  }
+  ```
+- **200 Successful Response**:
+  ```json
+  {
+    "old_data": {
+      "vehicle_type": "string",
+      "make": "string",
+      "model": "string",
+      "color": "string",
+      "year": 0,
+      "mileage": 0,
+      "vin": "string",
+      "license_plate": "string",
+      "registration_state": "string",
+      "fuel_type": "string",
+      "transmission_type": "string",
+      "is_active": true,
+      "nickname": "string",
+      "id": 0,
+      "created_at": "2025-05-09T05:15:16.092Z",
+      "updated_at": "2025-05-09T05:15:16.092Z"
+    },
+    "updated_data": {
+      "vehicle_type": "string",
+      "make": "string",
+      "model": "string",
+      "color": "string",
+      "year": 0,
+      "mileage": 0,
+      "vin": "string",
+      "license_plate": "string",
+      "registration_state": "string",
+      "fuel_type": "string",
+      "transmission_type": "string",
+      "is_active": true,
+      "nickname": "string",
+      "id": 0,
+      "created_at": "2025-05-09T05:15:16.092Z",
+      "updated_at": "2025-05-09T05:15:16.092Z"
+    },
+    "changes": {
+      "additionalProp1": {}
+    },
+    "update_message": "string"
+  }
+  ```
+- **422 Validation Error**:
+  ```json
+  {
+    "detail": [
+      {
+        "loc": [
+          "string",
+          0
+        ],
+        "msg": "string",
+        "type": "string"
+      }
+    ]
+  }
+  ```
+---
+
+- **DELETE /vehicles/{vehicle_id}/ - Requires User Authentication**
+- **Description**: Delete user vehicle from database.
+- **Parameters**:
+  ```json
+  {
+    "vehicle_id": 0,
+  }
+- **200 Successful Response**:
+  ```json
+  {
+    "vehicle_id": 0,
+    "message": "string"
+  }
+  ```
+- **422 Validation Error**:
+  ```json
+  {
+    "detail": [
+      {
+        "loc": [
+          "string",
+          0
+        ],
+        "msg": "string",
+        "type": "string"
+      }
+    ]
+  }
+  ```
+---
+
+### Maintenance
+
+- **POST /maintenance_records/ - Requires User Authentication**
+- **Description**: Create maintenance record for user vehicle in database.
+- **Request Body**:
+  ```json
+  {
+    "maintenance_provider": "Valvoline",
+    "maintenance_type": "Oil Change",
+    "description": "Changed to synthetic oil.",
+    "mileage": 133150,
+    "cost": 89.56,
+    "serviced_at": "2024-04-10T10:00:00",
+    "vehicle_id": 0
+  }
+- **200 Successful Response**:
+  ```json
+  {
+    "maintenance_provider": "Valvoline",
+    "maintenance_type": "Oil Change",
+    "description": "Changed to synthetic oil.",
+    "mileage": 133150,
+    "cost": 89.56,
+    "serviced_at": "2024-04-10T10:00:00",
+    "id": 0,
+    "vehicle_id": 0,
+    "created_at": "2025-05-09T05:22:52.831Z"
+  }
+  ```
+- **422 Validation Error**:
+  ```json
+  {
+    "detail": [
+      {
+        "loc": [
+          "string",
+          0
+        ],
+        "msg": "string",
+        "type": "string"
+      }
+    ]
+  }
+  ```
+---
+
+- **GET /maintenance_records/ - Requires User Authentication**
+- **Description**: Fetch all user vehicle maintenance records.
+- **200 Successful Response**:
+  ```json
+  {
+    "maintenance": [
+      {
+        "maintenance_provider": "Valvoline",
+        "maintenance_type": "Oil Change",
+        "description": "Changed to synthetic oil.",
+        "mileage": 133150,
+        "cost": 89.56,
+        "serviced_at": "2024-04-10T10:00:00",
+        "id": 0,
+        "created_at": "2025-05-09T05:25:03.029Z",
+        "updated_at": "2025-05-09T05:25:03.029Z",
+        "vehicle": {
+          "id": 0,
+          "make": "string",
+          "model": "string",
+          "year": 0,
+          "vin": "string",
+          "nickname": "string"
+        }
+      }
+    ]
+  }
+  ```
+---
+
+- **PUT /maintenance_records/ - Requires User Authentication**
+- **Description**: Update a user vehicle maintenance record in database.
+- **Parameters**:
+  ```json
+  {
+    "maintenance_record_id": 0,
+  }
+- **Request Body**
+  ```json
+  {
+    "maintenance_provider": "string",
+    "maintenance_type": "string",
+    "description": "string",
+    "mileage": 0,
+    "cost": 0.0,
+    "serviced_at": "2025-05-09T05:27:05.364Z"
+  }
+  ```
+- **200 Successful Response**:
+  ```json
+  {
+    "old_data": {
+      "maintenance_provider": "Valvoline",
+      "maintenance_type": "Oil Change",
+      "description": "Changed to synthetic oil.",
+      "mileage": 133150,
+      "cost": 89.56,
+      "serviced_at": "2024-04-10T10:00:00",
+      "id": 0,
+      "created_at": "2025-05-09T05:27:05.365Z",
+      "updated_at": "2025-05-09T05:27:05.365Z",
+      "vehicle": {
+        "id": 0,
+        "make": "string",
+        "model": "string",
+        "year": 0,
+        "vin": "string",
+        "nickname": "string"
+      }
+    },
+    "updated_data": {
+      "maintenance_provider": "Valvoline",
+      "maintenance_type": "Oil Change",
+      "description": "Changed to synthetic oil.",
+      "mileage": 133150,
+      "cost": 89.56,
+      "serviced_at": "2024-04-10T10:00:00",
+      "id": 0,
+      "created_at": "2025-05-09T05:27:05.365Z",
+      "updated_at": "2025-05-09T05:27:05.365Z",
+      "vehicle": {
+        "id": 0,
+        "make": "string",
+        "model": "string",
+        "year": 0,
+        "vin": "string",
+        "nickname": "string"
+      }
+    },
+    "changes": {
+      "additionalProp1": {}
+    },
+    "update_message": "string"
+  }
+  ```
+- **422 Validation Error**:
+  ```json
+  {
+    "detail": [
+      {
+        "loc": [
+          "string",
+          0
+        ],
+        "msg": "string",
+        "type": "string"
+      }
+    ]
+  }
+  ```
+---
+
+- **DELETE /maintenance_records/ - Requires User Authentication**
+- **Description**: Delete user vehicle maintenance record from database.
+- **Parameters**:
+  ```json
+  {
+    "maintenance_record_id": 0,
+  }
+- **200 Successful Response**:
+  ```json
+  {
+    "id": 0,
+    "message": "string"
+  }
+  ```
+- **422 Validation Error**:
+  ```json
+  {
+    "detail": [
+      {
+        "loc": [
+          "string",
+          0
+        ],
+        "msg": "string",
+        "type": "string"
+      }
+    ]
+  }
+  ```
+---
+
+- **GET /maintenance_records/filtered/ - Requires User Authentication**
+- **Description**: Fetch user vehicle maintenance records with filter parameters.
+- **Parameters**:
+  ```json
+  {
+    "vehicle_id": 0,
+    "maintenance_provider": "string",
+    "maintenance_type": "string",
+    "description": "string",
+    "mileage": 0,
+    "cost": 0.0,
+    "serviced_at": "string",
+  }
+- **200 Successful Response**:
+  ```json
+  {
+    "maintenance": [
+      {
+        "maintenance_provider": "Valvoline",
+        "maintenance_type": "Oil Change",
+        "description": "Changed to synthetic oil.",
+        "mileage": 133150,
+        "cost": 89.56,
+        "serviced_at": "2024-04-10T10:00:00",
+        "id": 0,
+        "created_at": "2025-05-09T05:41:50.560Z",
+        "updated_at": "2025-05-09T05:41:50.560Z",
+        "vehicle": {
+          "id": 0,
+          "make": "string",
+          "model": "string",
+          "year": 0,
+          "vin": "string",
+          "nickname": "string"
+        }
+      }
+    ]
+  }
+  ```
+- **422 Validation Error**:
+  ```json
+  {
+    "detail": [
+      {
+        "loc": [
+          "string",
+          0
+        ],
+        "msg": "string",
+        "type": "string"
+      }
+    ]
+  }
+  ```
+---
+
+### Reminders
+
+- **GET /reminders/ - Requires User Authentication**
+- **Description**: Fetch all user vehicle maintenance reminders.
+- **200 Successful Response**:
+  ```json
+  {
+    "reminders": [
+      {
+        "maintenance_type": "string",
+        "details": "string",
+        "interval_miles": 0,
+        "interval_months": 0,
+        "last_serviced_mileage": 0,
+        "last_serviced_date": "2025-05-09T05:49:03.157Z",
+        "notify_before_miles": 500,
+        "notify_before_days": 14,
+        "estimated_miles_driven_per_month": 500,
+        "is_active": true,
+        "id": 0,
+        "created_at": "2025-05-09T05:49:03.157Z",
+        "updated_at": "2025-05-09T05:49:03.157Z",
+        "vehicle": {
+          "id": 0,
+          "make": "string",
+          "model": "string",
+          "year": 0,
+          "vin": "string",
+          "nickname": "string"
+        }
+      }
+    ]
+  }
+  ```
+---
+
+- **GET /reminders/filtered/ - Requires User Authentication**
+- **Description**: Fetch all maintenance reminders for user vehicles in database with filters.
+- **Request Body**:
+  ```json
+  {
+    "vehicle_id": 0
+    "maintenance_type": "string",
+    "details": "string",
+    "interval_miles": 0,
+    "interval_months": 0,
+    "last_serviced_mileage": 0,
+    "last_serviced_date": "2025-05-09T05:51:22.674Z",
+    "notify_before_miles": 500,
+    "notify_before_days": 14,
+    "estimated_miles_driven_per_month": 500,
+    "is_active": true,
+    "vehicle_make": "string",
+    "vehicle_model": "string",
+    "vehicle_year": 0,
+    "vehicle_vin": "string",
+    "vehicle_nickname": "string",
+    
+  }
+- **200 Successful Response**:
+  ```json
+  {
+    "maintenance_type": "string",
+    "details": "string",
+    "interval_miles": 0,
+    "interval_months": 0,
+    "last_serviced_mileage": 0,
+    "last_serviced_date": "2025-05-09T05:51:22.675Z",
+    "notify_before_miles": 500,
+    "notify_before_days": 14,
+    "estimated_miles_driven_per_month": 500,
+    "is_active": true,
+    "id": 0,
+    "vehicle_id": 0,
+    "created_at": "2025-05-09T05:51:22.675Z"
+  }
+  ```
+- **422 Validation Error**:
+  ```json
+  {
+    "detail": [
+      {
+        "loc": [
+          "string",
+          0
+        ],
+        "msg": "string",
+        "type": "string"
+      }
+    ]
+  }
+  ```
+---
+
+- **GET /maintenance_records/filtered/ - Requires User Authentication**
+- **Description**: Fetch user vehicle maintenance records with filter parameters.
+- **Parameters**:
+  ```json
+  {
+    "vehicle_id": 0,
+    "maintenance_provider": "string",
+    "maintenance_type": "string",
+    "description": "string",
+    "mileage": 0,
+    "cost": 0,
+    "serviced_at": "string",
+  }
+- **200 Successful Response**:
+  ```json
+  {
+    "reminders": [
+      {
+        "maintenance_type": "string",
+        "details": "string",
+        "interval_miles": 0,
+        "interval_months": 0,
+        "last_serviced_mileage": 0,
+        "last_serviced_date": "2025-05-09T05:53:05.867Z",
+        "notify_before_miles": 500,
+        "notify_before_days": 14,
+        "estimated_miles_driven_per_month": 500,
+        "is_active": true,
+        "id": 0,
+        "created_at": "2025-05-09T05:53:05.867Z",
+        "updated_at": "2025-05-09T05:53:05.867Z",
+        "vehicle": {
+          "id": 0,
+          "make": "string",
+          "model": "string",
+          "year": 0,
+          "vin": "string",
+          "nickname": "string"
+        }
+      }
+    ]
+  }
+  ```
+- **422 Validation Error**:
+  ```json
+  {
+    "detail": [
+      {
+        "loc": [
+          "string",
+          0
+        ],
+        "msg": "string",
+        "type": "string"
+      }
+    ]
+  }
+  ```
+---
+
+- **PUT /reminders/ - Requires User Authentication**
+- **Description**: Update a user vehicle maintenance reminder in database.
+- **Parameters**:
+  ```json
+  {
+    "maintenance_reminder_id": 0,
+  }
+- **Request Body**
+  ```json
+  {
+    "maintenance_type": "string",
+    "details": "string",
+    "interval_miles": 0,
+    "interval_months": 0,
+    "last_serviced_mileage": 0,
+    "last_serviced_date": "2025-05-09T05:58:12.272Z",
+    "notify_before_miles": 0,
+    "notify_before_days": 0,
+    "estimated_miles_driven_per_month": 0,
+    "is_active": true
+  }
+  ```
+- **200 Successful Response**:
+  ```json
+  {
+    "old_data": {
+      "maintenance_type": "string",
+      "details": "string",
+      "interval_miles": 0,
+      "interval_months": 0,
+      "last_serviced_mileage": 0,
+      "last_serviced_date": "2025-05-09T05:58:12.275Z",
+      "notify_before_miles": 500,
+      "notify_before_days": 14,
+      "estimated_miles_driven_per_month": 500,
+      "is_active": true,
+      "id": 0,
+      "created_at": "2025-05-09T05:58:12.275Z",
+      "updated_at": "2025-05-09T05:58:12.275Z",
+      "vehicle": {
+        "id": 0,
+        "make": "string",
+        "model": "string",
+        "year": 0,
+        "vin": "string",
+        "nickname": "string"
+      }
+    },
+    "updated_data": {
+      "maintenance_type": "string",
+      "details": "string",
+      "interval_miles": 0,
+      "interval_months": 0,
+      "last_serviced_mileage": 0,
+      "last_serviced_date": "2025-05-09T05:58:12.275Z",
+      "notify_before_miles": 500,
+      "notify_before_days": 14,
+      "estimated_miles_driven_per_month": 500,
+      "is_active": true,
+      "id": 0,
+      "created_at": "2025-05-09T05:58:12.275Z",
+      "updated_at": "2025-05-09T05:58:12.275Z",
+      "vehicle": {
+        "id": 0,
+        "make": "string",
+        "model": "string",
+        "year": 0,
+        "vin": "string",
+        "nickname": "string"
+      }
+    },
+    "changes": {
+      "additionalProp1": {}
+    },
+    "update_message": "string"
+  }
+  ```
+- **422 Validation Error**:
+  ```json
+  {
+    "detail": [
+      {
+        "loc": [
+          "string",
+          0
+        ],
+        "msg": "string",
+        "type": "string"
+      }
+    ]
+  }
+  ```
+---
+
+- **DELETE /reminders/ - Requires User Authentication**
+- **Description**: Delete user vehicle maintenance reminder from database.
+- **Parameters**:
+  ```json
+  {
+    "maintenance_reminder_id": 0,
+  }
+- **200 Successful Response**:
+  ```json
+  {
+    "id": 0,
+    "message": "string"
+  }
+  ```
+- **422 Validation Error**:
+  ```json
+  {
+    "detail": [
+      {
+        "loc": [
+          "string",
+          0
+        ],
+        "msg": "string",
+        "type": "string"
+      }
+    ]
+  }
+  ```
+---
+
+### Statistics
+
+- **GET /statistics/ - Requires User Authentication**
+- **Description**: Fetch user maintenance statistics.
+- **200 Successful Response**:
+  ```json
+  {
+    "stats": {
+      "total_amount_of_vehicles": 0,
+      "total_maintenance_records": 0,
+      "total_maintenance_cost": 0,
+      "total_maintenance_reminders": 0,
+      "upcoming_reminder_count": 0,
+      "overdue_reminder_count": 0,
+      "highest_cost_maintenance_record": 0,
+      "most_maintained_vehicle": "string"
+    },
+    "generated_at": "2025-05-09T06:02:29.332Z",
+    "message": "User maintenance stats fetched successfully"
+  }
+  ```
+
+## License
+
+This project is licensed under the [MIT License](LICENSE.txt).
